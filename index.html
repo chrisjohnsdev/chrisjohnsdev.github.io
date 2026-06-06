@@ -549,6 +549,7 @@
       const STARFIELD_FOV = 90;
       const SCROLL_HORIZONTAL_ROTATION = Math.PI * 0;
       const SCROLL_VERTICAL_ROTATION = Math.PI * .375;
+      const MOBILE_SCROLL_ROTATION_MULTIPLIER = 3.5;
       const AUTO_VERTICAL_ROTATION_SPEED = 0.012;
       const BASE_HORIZONTAL_ROTATION = 0;
       const BASE_VERTICAL_ROTATION = 90.5;
@@ -566,13 +567,6 @@
         powerPreference: "high-performance"
       });
       const textureLoader = new THREE.TextureLoader();
-      const sphere = new THREE.Mesh(
-        new THREE.SphereGeometry(500, 96, 64),
-        new THREE.MeshBasicMaterial({
-          side: THREE.BackSide,
-          toneMapped: false
-        })
-      );
 
       let targetRotation = BASE_HORIZONTAL_ROTATION;
       let targetVerticalRotation = BASE_VERTICAL_ROTATION;
@@ -587,19 +581,15 @@
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.setClearColor(0x03060d, 1);
       camera.position.set(0, 0, 0.01);
-      scene.add(sphere);
 
       let isTextureReady = false;
       let hasRevealedBackground = false;
 
-      textureLoader.load("assets/images/milkyway_4k.webp", (texture) => {
+      textureLoader.load("assets/images/milkyway_8k.webp", (texture) => {
         texture.colorSpace = THREE.SRGBColorSpace;
         texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.repeat.x = -1;
-        texture.offset.x = 1;
-        sphere.material.map = texture;
-        sphere.material.needsUpdate = true;
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        scene.background = texture;
         isTextureReady = true;
         requestRender();
       });
@@ -607,10 +597,16 @@
       function updateTargetRotation() {
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
         const progress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+        const scrollRotationMultiplier = window.matchMedia("(max-width: 560px)").matches
+          ? MOBILE_SCROLL_ROTATION_MULTIPLIER
+          : 1;
 
-        targetRotation = BASE_HORIZONTAL_ROTATION + progress * SCROLL_HORIZONTAL_ROTATION;
+        targetRotation =
+          BASE_HORIZONTAL_ROTATION +
+          progress * SCROLL_HORIZONTAL_ROTATION * scrollRotationMultiplier;
         targetVerticalRotation =
-          BASE_VERTICAL_ROTATION + progress * SCROLL_VERTICAL_ROTATION;
+          BASE_VERTICAL_ROTATION +
+          progress * SCROLL_VERTICAL_ROTATION * scrollRotationMultiplier;
         requestRender();
       }
 
@@ -623,8 +619,8 @@
         currentRotation += (targetRotation - currentRotation) * 0.08;
         currentVerticalRotation +=
           (targetVerticalRotation - currentVerticalRotation) * 0.08;
-        sphere.rotation.x = currentVerticalRotation + autoVerticalRotation;
-        sphere.rotation.y = currentRotation;
+        scene.backgroundRotation.x = currentVerticalRotation + autoVerticalRotation;
+        scene.backgroundRotation.y = currentRotation;
         renderer.render(scene, camera);
 
         if (isTextureReady && !hasRevealedBackground) {
