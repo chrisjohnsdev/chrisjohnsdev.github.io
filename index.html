@@ -1,11 +1,663 @@
 <!doctype html>
-<html>
+<html lang="en" style="background: #03060d;">
   <head>
     <meta charset="utf-8">
-    <title>Chris Johns</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Portfolio site for Chris Johns, a full-stack developer and technical artist."
+    >
+    <meta name="theme-color" content="#03060d">
+    <title>Chris Johns | Full-Stack Developer and Technical Artist</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #edf4ff;
+        --muted: #b3c1d7;
+        --paper: #03060d;
+        --panel: rgba(8, 13, 24, 0.78);
+        --line: rgba(174, 195, 230, 0.2);
+        --accent: #77d5d1;
+        --accent-dark: #b5f2ee;
+        --sun: #f0c674;
+        --shadow: 0 22px 70px rgba(0, 0, 0, 0.38);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: #03060d;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--paper);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.6;
+      }
+
+      body::before {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background:
+          radial-gradient(circle at 34% 18%, rgba(31, 61, 78, 0.32), transparent 34%),
+          linear-gradient(180deg, #050914, #02040a);
+        content: "";
+        pointer-events: none;
+      }
+
+      .space-background {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          radial-gradient(circle at 34% 18%, rgba(31, 61, 78, 0.32), transparent 34%),
+          linear-gradient(180deg, #050914, #02040a);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1600ms ease;
+      }
+
+      .space-background.is-loaded {
+        opacity: 1;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .site-shell {
+        position: relative;
+        z-index: 1;
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .site-header {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 28px 0;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        color: var(--muted);
+        font-size: 0.95rem;
+        font-weight: 650;
+      }
+
+      .nav a {
+        text-decoration: none;
+      }
+
+      .nav a:hover {
+        color: var(--accent);
+      }
+
+      .social-links {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .social-link {
+        display: inline-flex;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(8, 13, 24, 0.64);
+        color: var(--accent-dark);
+        text-decoration: none;
+        transition: transform 180ms ease, border-color 180ms ease, color 180ms ease;
+        backdrop-filter: blur(16px);
+      }
+
+      .social-link:hover {
+        border-color: rgba(119, 213, 209, 0.48);
+        color: var(--accent);
+        transform: translateY(-2px);
+      }
+
+      .social-link svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
+        align-items: center;
+        gap: 52px;
+        padding: 52px 0 76px;
+      }
+
+      .eyebrow {
+        margin: 0 0 16px;
+        color: var(--accent-dark);
+        font-size: 0.88rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 720px;
+        margin-bottom: 22px;
+        font-size: clamp(2.25rem, 4.4vw, 4.25rem);
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+
+      .lede {
+        max-width: 640px;
+        margin-bottom: 30px;
+        color: var(--muted);
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 12px 18px;
+        font-weight: 800;
+        text-decoration: none;
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+      }
+
+      .button.primary {
+        background: var(--accent);
+        color: #041015;
+        box-shadow: 0 16px 34px rgba(119, 213, 209, 0.2);
+      }
+
+      .button.secondary {
+        border-color: var(--line);
+        background: rgba(8, 13, 24, 0.68);
+        color: var(--accent-dark);
+        backdrop-filter: blur(16px);
+      }
+
+      .portrait-wrap {
+        position: relative;
+        width: min(100%, 390px);
+      }
+
+      .portrait-frame {
+        overflow: hidden;
+        aspect-ratio: 1;
+        border: 1px solid rgba(174, 195, 230, 0.22);
+        border-radius: 50%;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .portrait-frame img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .section {
+        border-top: 1px solid var(--line);
+        padding: 46px 0;
+      }
+
+      .section-grid {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        align-items: start;
+        gap: 48px;
+      }
+
+      h2 {
+        margin-bottom: 10px;
+        font-size: 1.05rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .section-intro {
+        color: var(--muted);
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        min-height: 180px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px;
+        background: var(--panel);
+        backdrop-filter: blur(18px);
+      }
+
+      .card h3 {
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+      }
+
+      .card p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .skill-list {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      .skill-list li {
+        display: inline-flex;
+        min-height: 38px;
+        align-items: center;
+        border: 1px solid rgba(119, 213, 209, 0.22);
+        border-radius: 8px;
+        padding: 7px 11px;
+        background: rgba(8, 13, 24, 0.68);
+        color: var(--accent-dark);
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: 1.2;
+        backdrop-filter: blur(16px);
+      }
+
+      .site-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        border-top: 1px solid var(--line);
+        padding: 30px 0 44px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .site-footer a {
+        color: var(--accent-dark);
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      @media (max-width: 860px) {
+        .site-header,
+        .site-footer {
+          flex-direction: column;
+        }
+
+        .site-header {
+          align-items: flex-start;
+        }
+
+        .site-footer {
+          align-items: flex-end;
+        }
+
+        .hero,
+        .section-grid,
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          gap: 34px;
+          padding-top: 24px;
+        }
+
+        .portrait-wrap {
+          width: min(100%, 340px);
+        }
+      }
+
+      @media (max-width: 560px) {
+        .site-shell {
+          width: min(100% - 28px, 1120px);
+        }
+
+        .nav {
+          width: 100%;
+          justify-content: space-between;
+          gap: 10px;
+          font-size: 0.9rem;
+        }
+
+        .actions,
+        .button {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>Chris Johns</h1>
-    <p>Full-Stack .NET Developer</p>
+    <canvas class="space-background" id="space-background" aria-hidden="true"></canvas>
+
+    <header class="site-shell site-header">
+      <div class="social-links" aria-label="Social links">
+        <a
+          class="social-link"
+          href="https://www.linkedin.com/in/chrisjohnsdev/"
+          aria-label="LinkedIn profile"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.45 20.45h-3.55v-5.56c0-1.33-.03-3.03-1.85-3.03-1.85 0-2.13 1.44-2.13 2.93v5.66H9.37V8.99h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.29h-.02ZM5.36 7.42a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12Zm1.78 13.03H3.58V8.99h3.56v11.46ZM22.22.5H1.77C.79.5 0 1.27 0 2.23v20.54c0 .96.79 1.73 1.77 1.73h20.45c.98 0 1.78-.77 1.78-1.73V2.23C24 1.27 23.2.5 22.22.5Z"></path>
+          </svg>
+        </a>
+        <a
+          class="social-link"
+          href="https://github.com/chrisjohnsdev"
+          aria-label="GitHub profile"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 .5C5.65.5.9 5.24.9 11.6c0 4.9 3.17 9.05 7.58 10.57.55.1.76-.24.76-.53v-2.07c-3.08.67-3.73-1.31-3.73-1.31-.5-1.29-1.23-1.63-1.23-1.63-1.01-.69.08-.67.08-.67 1.11.08 1.7 1.14 1.7 1.14.99 1.7 2.59 1.21 3.22.93.1-.72.39-1.21.7-1.49-2.46-.28-5.05-1.23-5.05-5.47 0-1.21.43-2.2 1.14-2.97-.12-.28-.5-1.41.11-2.93 0 0 .94-.3 3.05 1.13A10.6 10.6 0 0 1 12 5.92c.94 0 1.88.13 2.76.38 2.1-1.43 3.04-1.13 3.04-1.13.61 1.52.23 2.65.11 2.93.71.77 1.14 1.76 1.14 2.97 0 4.25-2.59 5.18-5.06 5.46.4.35.75 1.03.75 2.08v3.09c0 .29.2.64.77.53a11.12 11.12 0 0 0 7.57-10.57C23.1 5.24 18.36.5 12 .5Z"></path>
+          </svg>
+        </a>
+      </div>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#hobbies">Hobbies</a>
+        <a href="assets/resume/Chris_Johns_Resume.pdf">Resume</a>
+      </nav>
+    </header>
+
+    <main id="top" class="site-shell">
+      <section class="hero" aria-labelledby="intro-title">
+        <div class="portrait-wrap" aria-label="Portrait of Chris Johns">
+          <div class="portrait-frame">
+            <img src="assets/images/me_2021_touchup.png" alt="Chris Johns">
+          </div>
+        </div>
+
+        <div>
+          <p class="eyebrow">Chris Johns</p>
+          <h1 id="intro-title">Full-stack developer and technical artist.</h1>
+          <p class="lede">
+            I build applications and 3D/VFX production tools and assets.
+          </p>
+          <div class="actions" aria-label="Portfolio links">
+            <a class="button primary" href="assets/resume/Chris_Johns_Resume.pdf">
+              View Resume
+            </a>
+            <a class="button secondary" href="https://github.com/chrisjohnsdev">
+              GitHub Profile
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="section section-grid" aria-labelledby="about-title">
+        <div>
+          <h2 id="about-title">About</h2>
+          <p class="section-intro">Developer profile</p>
+        </div>
+        <div>
+          <p>
+            I work across the stack, with a foundation in .NET development and
+            a technical art background. I like building useful software,
+            practical tools, and visual systems that are clear to use.
+          </p>
+        </div>
+      </section>
+
+      <section id="skills" class="section section-grid" aria-labelledby="skills-title">
+        <div>
+          <h2 id="skills-title">Skills</h2>
+          <p class="section-intro">Tools and focus areas</p>
+        </div>
+        <ul class="skill-list" aria-label="Skills">
+          <li>.NET</li>
+          <li>C#</li>
+          <li>ASP.NET</li>
+          <li>SQL</li>
+          <li>JavaScript</li>
+          <li>HTML</li>
+          <li>CSS</li>
+          <li>GitHub</li>
+          <li>Full-stack development</li>
+        </ul>
+      </section>
+
+      <section id="hobbies" class="section section-grid" aria-labelledby="hobbies-title">
+        <div>
+          <h2 id="hobbies-title">Hobbies</h2>
+          <p class="section-intro">Away from the keyboard</p>
+        </div>
+        <ul class="skill-list" aria-label="Hobbies">
+          <li>Chess</li>
+          <li>Guitar</li>
+          <li>Golf</li>
+          <li>Video games</li>
+          <li>Sports</li>
+          <li>Cooking</li>
+        </ul>
+      </section>
+
+      <section class="section section-grid" aria-labelledby="work-title">
+        <div>
+          <h2 id="work-title">Work</h2>
+          <p class="section-intro">What this will grow into</p>
+        </div>
+        <div class="content-grid">
+          <article class="card">
+            <h3>Project Highlights</h3>
+            <p>
+              A home for selected builds, case studies, and links to working
+              demos once the portfolio gets its next pass.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Resume</h3>
+            <p>
+              The current resume is available as a PDF, organized under the
+              site assets so it is easy to replace later.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Public GitHub</h3>
+            <p>
+              The GitHub profile link gives visitors a direct path into public
+              repositories and development activity.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-shell site-footer">
+      <div class="social-links" aria-label="Footer social links">
+        <a
+          class="social-link"
+          href="https://www.linkedin.com/in/chrisjohnsdev/"
+          aria-label="LinkedIn profile"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.45 20.45h-3.55v-5.56c0-1.33-.03-3.03-1.85-3.03-1.85 0-2.13 1.44-2.13 2.93v5.66H9.37V8.99h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.29h-.02ZM5.36 7.42a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12Zm1.78 13.03H3.58V8.99h3.56v11.46ZM22.22.5H1.77C.79.5 0 1.27 0 2.23v20.54c0 .96.79 1.73 1.77 1.73h20.45c.98 0 1.78-.77 1.78-1.73V2.23C24 1.27 23.2.5 22.22.5Z"></path>
+          </svg>
+        </a>
+        <a
+          class="social-link"
+          href="https://github.com/chrisjohnsdev"
+          aria-label="GitHub profile"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 .5C5.65.5.9 5.24.9 11.6c0 4.9 3.17 9.05 7.58 10.57.55.1.76-.24.76-.53v-2.07c-3.08.67-3.73-1.31-3.73-1.31-.5-1.29-1.23-1.63-1.23-1.63-1.01-.69.08-.67.08-.67 1.11.08 1.7 1.14 1.7 1.14.99 1.7 2.59 1.21 3.22.93.1-.72.39-1.21.7-1.49-2.46-.28-5.05-1.23-5.05-5.47 0-1.21.43-2.2 1.14-2.97-.12-.28-.5-1.41.11-2.93 0 0 .94-.3 3.05 1.13A10.6 10.6 0 0 1 12 5.92c.94 0 1.88.13 2.76.38 2.1-1.43 3.04-1.13 3.04-1.13.61 1.52.23 2.65.11 2.93.71.77 1.14 1.76 1.14 2.97 0 4.25-2.59 5.18-5.06 5.46.4.35.75 1.03.75 2.08v3.09c0 .29.2.64.77.53a11.12 11.12 0 0 0 7.57-10.57C23.1 5.24 18.36.5 12 .5Z"></path>
+          </svg>
+        </a>
+      </div>
+      <span>&copy; <span id="copyright-year"></span> Chris Johns</span>
+    </footer>
+    <script type="module">
+      import * as THREE from "https://unpkg.com/three@0.165.0/build/three.module.js";
+
+      document.querySelector("#copyright-year").textContent =
+        new Date().getFullYear();
+
+      // Keep this in a moderate range. Very wide perspective FOVs, like 120,
+      // naturally stretch the edges like an ultra-wide lens.
+      const STARFIELD_FOV = 90;
+      const SCROLL_HORIZONTAL_ROTATION = Math.PI * 0;
+      const SCROLL_VERTICAL_ROTATION = Math.PI * .375;
+      const AUTO_VERTICAL_ROTATION_SPEED = 0.012;
+      const BASE_HORIZONTAL_ROTATION = 0;
+      const BASE_VERTICAL_ROTATION = 90.5;
+      const canvas = document.querySelector("#space-background");
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        STARFIELD_FOV,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1200
+      );
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        powerPreference: "high-performance"
+      });
+      const textureLoader = new THREE.TextureLoader();
+      const sphere = new THREE.Mesh(
+        new THREE.SphereGeometry(500, 96, 64),
+        new THREE.MeshBasicMaterial({
+          side: THREE.BackSide,
+          toneMapped: false
+        })
+      );
+
+      let targetRotation = BASE_HORIZONTAL_ROTATION;
+      let targetVerticalRotation = BASE_VERTICAL_ROTATION;
+      let currentRotation = BASE_HORIZONTAL_ROTATION;
+      let currentVerticalRotation = BASE_VERTICAL_ROTATION;
+      let autoVerticalRotation = 0;
+      let lastRenderTime = 0;
+      let frameRequest = null;
+
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.setClearColor(0x03060d, 1);
+      camera.position.set(0, 0, 0.01);
+      scene.add(sphere);
+
+      let isTextureReady = false;
+      let hasRevealedBackground = false;
+
+      textureLoader.load("assets/images/milkyway_8k.jpg", (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.repeat.x = -1;
+        texture.offset.x = 1;
+        sphere.material.map = texture;
+        sphere.material.needsUpdate = true;
+        isTextureReady = true;
+        requestRender();
+      });
+
+      function updateTargetRotation() {
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+
+        targetRotation = BASE_HORIZONTAL_ROTATION + progress * SCROLL_HORIZONTAL_ROTATION;
+        targetVerticalRotation =
+          BASE_VERTICAL_ROTATION + progress * SCROLL_VERTICAL_ROTATION;
+        requestRender();
+      }
+
+      function render(timestamp = 0) {
+        frameRequest = null;
+        const delta = Math.min((timestamp - lastRenderTime) / 1000, 0.1);
+
+        lastRenderTime = timestamp;
+        autoVerticalRotation += delta * AUTO_VERTICAL_ROTATION_SPEED;
+        currentRotation += (targetRotation - currentRotation) * 0.08;
+        currentVerticalRotation +=
+          (targetVerticalRotation - currentVerticalRotation) * 0.08;
+        sphere.rotation.x = currentVerticalRotation + autoVerticalRotation;
+        sphere.rotation.y = currentRotation;
+        renderer.render(scene, camera);
+
+        if (isTextureReady && !hasRevealedBackground) {
+          hasRevealedBackground = true;
+          window.requestAnimationFrame(() => {
+            canvas.classList.add("is-loaded");
+          });
+        }
+
+        if (
+          AUTO_VERTICAL_ROTATION_SPEED !== 0 ||
+          Math.abs(targetRotation - currentRotation) > 0.0005 ||
+          Math.abs(targetVerticalRotation - currentVerticalRotation) > 0.0005
+        ) {
+          requestRender();
+        }
+      }
+
+      function requestRender() {
+        if (frameRequest === null) {
+          frameRequest = window.requestAnimationFrame(render);
+        }
+      }
+
+      window.addEventListener("scroll", updateTargetRotation, { passive: true });
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        updateTargetRotation();
+      });
+
+      updateTargetRotation();
+    </script>
   </body>
 </html>
